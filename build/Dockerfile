@@ -7,7 +7,7 @@ RUN yum -y install epel-release
 RUN yum -y install git
 RUN yum -y install python
 RUN yum -y install python-pip
-RUN pip install -r requirements.txt
+RUN pip install -r files/requirements.txt
 RUN yum clean all
 
 # Add the files
