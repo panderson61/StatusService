@@ -6,9 +6,16 @@ MAINTAINER Paul Anderson "panderson@avetta.com"
 RUN yum -y install epel-release
 RUN yum -y install git
 RUN yum -y install python
-RUN yum -y install python-pip
-RUN pip install -r files/requirements.txt
+RUN yum -y install python-pip python-dev build-essential
+RUN yum -y update
 RUN yum clean all
 
 # Add the files
-COPY files/app.py /opt/app/app.py
+ADD files/app.py /opt/app/app.py
+ADD files/requirements.txt /opt/app/requirements.txt
+
+WORKDIR /opt/app
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+CMD ["python", "/opt/app/app.py"]
