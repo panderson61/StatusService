@@ -1,4 +1,5 @@
 from flask import Flask
+import thread
 app = Flask(__name__)
 
 @app.route('/')
@@ -17,5 +18,8 @@ def version():
 def hello_world():
     return 'Hello, World!'
 
-if __name__ == '__main__':
+def flaskThread():
     app.run(host='0.0.0.0', port=5000, debug=True)
+    
+if __name__ == '__main__':
+    thread.start_new_thread(flaskThread,())
