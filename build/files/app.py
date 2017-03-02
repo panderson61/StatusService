@@ -5,13 +5,13 @@ app = Flask(__name__)
 def index():
     return 'Index Page'
 
-@app.route('/health')
+@app.route('/jobrunner/v1/health')
 def health():
-    return 'The health page'
+    return '{"status":"Ok"}'
 
-@app.route('/version')
+@app.route('/jobrunner/v1/version')
 def version():
-    return 'The version page'
+    return '{"tag":"1","commit":"1","buildId":1}'
 
 @app.route('/hello')
 def hello_world():
