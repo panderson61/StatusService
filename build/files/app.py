@@ -21,6 +21,10 @@ def hello_world():
 def flaskThread():
     app.run(host='0.0.0.0', port=5000, debug=True)
     
-if __name__ == '__main__':
+def main():
     web = threading.Thread(target=flaskThread)
+    web.daemon = True
     web.start()
+    
+if __name__ == '__main__':
+    main()
