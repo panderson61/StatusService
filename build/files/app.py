@@ -1,5 +1,5 @@
 from flask import Flask
-import thread
+import threading
 app = Flask(__name__)
 
 @app.route('/')
@@ -22,4 +22,5 @@ def flaskThread():
     app.run(host='0.0.0.0', port=5000, debug=True)
     
 if __name__ == '__main__':
-    thread.start_new_thread(flaskThread,())
+    web = threading.Thread(target=flaskThread)
+    web.start()
