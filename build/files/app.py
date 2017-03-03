@@ -1,10 +1,11 @@
 from flask import Flask
 import threading
+import logging
 import time
 app = Flask(__name__)
 
 data_store = {'a': 1}
-def interval_query():
+def incrementer():
     while True:
         global data_store
         time.sleep(1)
@@ -12,12 +13,8 @@ def interval_query():
 	if count >= 100:
 	    count = 1
         vals = {'a': count+1}
-	print "setting value"
+	logging.debug("count is %s", count)
         data_store.update(vals)
-
-# thread = threading.Thread(name='interval_query', target=interval_query)
-# thread.setDaemon(True)
-# thread.start()
 
 @app.route('/')
 def index():
@@ -31,23 +28,23 @@ def health():
 def version():
     return '{"tag":"1","commit":"1","buildId":1}'
 
-@app.route('/random')
-def random():
+@app.route('/value')
+def value():
+    logging.debug("running value")
     return str(data_store['a'])
 
 @app.route('/hello')
 def hello_world():
     return 'Hello, World!'
 
-def flaskThread():
-    app.use_reloader=False
-    app.run(host='0.0.0.0', port=5000)
-    
 def main():
-    # app.run(host='0.0.0.0', port=5000, debug=True)
-    web = threading.Thread(target=interval_query)
+    logging.basicConfig(filename='/var/log/flask.log',level=logging.DEBUG)
+
+    logging.info("Starting counter thread")
+    web = threading.Thread(target=incrementer)
     web.daemon = True
     web.start()
+    logging.info("Starting app")
     app.run(host='0.0.0.0', port=5000, debug=True)
     
 if __name__ == '__main__':
