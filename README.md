@@ -1,5 +1,4 @@
-# docker-python-rest-app
-tutorial implementation
+StatusService
 
 Checkout
 git clone https://github.com/picsauditing/StatusService.git
