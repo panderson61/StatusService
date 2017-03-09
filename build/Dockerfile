@@ -10,12 +10,15 @@ RUN yum -y install python-pip python-dev build-essential
 RUN yum -y update
 RUN yum clean all
 
-# Add the files
-ADD files/app.py /opt/app/app.py
-ADD files/requirements.txt /opt/app/requirements.txt
+RUN mkdir -p /opt/app/templates
 
 WORKDIR /opt/app
+COPY files/requirements.txt /opt/app/requirements.txt
 RUN pip install -r requirements.txt
+
+COPY files/app.py /opt/app/app.py
+
+COPY files/templates/hello.html /opt/app/templates/hello.html
 
 EXPOSE 5000
 CMD ["python", "/opt/app/app.py"]
