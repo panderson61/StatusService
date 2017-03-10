@@ -7,6 +7,9 @@ app = Flask(__name__)
 
 data_store = {'a' : 1, 'b' : 88}
 run = False
+inc = None
+dec = None
+
 def incrementer():
     global run
     global data_store
@@ -43,12 +46,14 @@ def index():
 	# logging.debug(data)
 	result_dict = request.form.to_dict()
 	logging.debug(result_dict)
-        if result_dict['MyStop'] == 'Stop':
+        if result_dict['StopButton'] == 'Stop':
 	    logging.debug("Stop button pressed")
-        # elif request.form['submit'] == 'Start':
-	    # logging.debug("Start button pressed")
-        # else:
-	logging.debug("nothing happened")
+            return redirect(url_for('stop'))
+        elif result_dict['StopButton'] == 'Start':
+	    logging.debug("Start button pressed")
+            return redirect(url_for('start'))
+        else:
+	    logging.debug("nothing happened")
     elif request.method == 'GET':
 	logging.debug("returning the index page")
     return redirect(url_for('value'))
@@ -75,26 +80,46 @@ def hello_world():
 def hello(name=None):
     return render_template('hello.html', name=name)
 
+@app.route('/start')
+def start():
+    global run
+    global dec
+    global inc
+    run = True
+
+    if inc is None:
+        logging.info("Starting inc thread")
+        inc = threading.Thread(target=incrementer)
+        inc.daemon = True
+        inc.start()
+    else:
+        logging.info("inc thread already running")
+
+    if dec is None:
+        logging.info("Starting dec thread")
+        dec = threading.Thread(target=decrementer)
+        dec.daemon = True
+        dec.start()
+    else:
+        logging.info("dec thread already running")
+    return redirect(url_for('value'))
+
 @app.route('/stop')
 def stop():
     global run
+    global dec
+    global inc
     run = False
-    return 'stopping'
+    if inc is not None:
+        inc.join()
+        inc = None
+    if dec is not None:
+        dec.join()
+        dec = None
+    return redirect(url_for('value'))
 
 def main():
-    global run
-    run = True
     logging.basicConfig(filename='/var/log/flask.log',level=logging.DEBUG)
-
-    logging.info("Starting inc thread")
-    inc = threading.Thread(target=incrementer)
-    inc.daemon = True
-    inc.start()
-
-    logging.info("Starting dec thread")
-    dec = threading.Thread(target=decrementer)
-    dec.daemon = True
-    dec.start()
 
     logging.info("Starting app")
     app.run(host='0.0.0.0', port=5000, debug=True)
