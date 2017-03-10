@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template
+from flask import render_template, request, redirect, url_for
 import threading
 import logging
 import time
@@ -32,8 +32,26 @@ def decrementer():
         data_store.update(vals)
 
 @app.route('/')
+def default():
+    return render_template('index.html')
+
+@app.route('/index',methods = ['POST', 'GET'])
 def index():
-    return 'Index Page'
+    if request.method == 'POST':
+        # len = request.headers["Content-Length"]
+        # data=request.stream.read()
+	# logging.debug(data)
+	result_dict = request.form.to_dict()
+	logging.debug(result_dict)
+        if result_dict['MyStop'] == 'Stop':
+	    logging.debug("Stop button pressed")
+        # elif request.form['submit'] == 'Start':
+	    # logging.debug("Start button pressed")
+        # else:
+	logging.debug("nothing happened")
+    elif request.method == 'GET':
+	logging.debug("returning the index page")
+    return redirect(url_for('value'))
 
 @app.route('/jobrunner/v1/health')
 def health():

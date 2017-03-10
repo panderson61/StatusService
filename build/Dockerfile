@@ -19,6 +19,7 @@ RUN pip install -r requirements.txt
 COPY files/app.py /opt/app/app.py
 
 COPY files/templates/hello.html /opt/app/templates/hello.html
+COPY files/templates/index.html /opt/app/templates/index.html
 
 EXPOSE 5000
 CMD ["python", "/opt/app/app.py"]
