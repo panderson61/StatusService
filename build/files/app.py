@@ -119,7 +119,11 @@ def stop():
     return redirect(url_for('value'))
 
 def main():
-    logging.basicConfig(filename='/var/log/flask.log',level=logging.DEBUG)
+    logging.basicConfig(filename='/var/log/statusservice.log',level=logging.DEBUG)
+    #my_logger = logging.getLogger('MyLogger')
+    #my_logger.setLevel(logging.DEBUG)
+    #log_handler = logging.handlers.SysLogHandler(address='/var/log/statusservice.log')
+    #my_logger.addHandler(log_handler)
 
     logging.info("Starting app")
     app.run(host='0.0.0.0', port=5000, debug=True)

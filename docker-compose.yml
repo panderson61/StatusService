@@ -1,0 +1,10 @@
+version: '2'
+services:
+  statusservice:
+    image: statusservice
+    hostname: statusservice
+    networks:
+      - salt
+networks:
+  salt:
+    external: true

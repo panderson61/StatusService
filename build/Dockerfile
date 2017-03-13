@@ -17,6 +17,7 @@ COPY files/requirements.txt /opt/app/requirements.txt
 RUN pip install -r requirements.txt
 
 COPY files/app.py /opt/app/app.py
+COPY files/logtest.py /opt/app/logtest.py
 
 COPY files/templates/hello.html /opt/app/templates/hello.html
 COPY files/templates/index.html /opt/app/templates/index.html
