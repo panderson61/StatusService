@@ -37,8 +37,15 @@ def decrementer():
 
 @app.route('/')
 def default():
-    logging.debug("rendering index")
-    return render_template('index.html')
+    logging.debug("running default")
+    if session.get('logged_in'):
+        return render_template('index.html')
+    return render_template('login.html')
+
+@app.route('/home')
+def home():
+    logging.debug("running home")
+    return redirect(url_for('default'))
 
 @app.route('/index',methods = ['POST', 'GET'])
 def index():
@@ -54,30 +61,30 @@ def index():
         elif result_dict['StopButton'] == 'Start':
 	    logging.debug("Start button pressed")
             return redirect(url_for('start'))
+        elif result_dict['StopButton'] == 'Logout':
+	    logging.debug("Logout button pressed")
+            return redirect(url_for('logout'))
         else:
 	    logging.debug("nothing happened")
     elif request.method == 'GET':
 	logging.debug("returning the index page")
-    # return redirect(url_for('value'))
     return redirect(url_for('default'))
 
-@app.route('/home')
-def home():
-    logging.debug("running home")
-    if not session.get('logged_in'):
-        return render_template('login.html')
-    else:
-        return "Hello Boss!"
-
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def do_admin_login():
     logging.debug("running login")
-    if request.form['password'] == 'password' and request.form['username'] == 'admin':
-        session['logged_in'] = True
-    else:
-        flash('wrong password!')
-    # return home()
-    return redirect(url_for('value'))
+    if request.method == 'POST':
+        if request.form['password'] == 'password' and request.form['username'] == 'admin':
+            session['logged_in'] = True
+        else:
+            flash('wrong password!')
+    return redirect(url_for('default'))
+
+@app.route('/logout')
+def logout():
+    logging.debug("running logout")
+    session['logged_in'] = False
+    return redirect(url_for('default'))
 
 @app.route('/jobrunner/v1/health')
 def health():
@@ -101,6 +108,7 @@ def hello_world():
 @app.route('/hello/')
 @app.route('/hello/<name>')
 def hello(name=None):
+    logging.debug("running hello template")
     return render_template('hello.html', name=name)
 
 @app.route('/start')
@@ -108,6 +116,9 @@ def start():
     global run
     global dec
     global inc
+    logging.debug("running start")
+    if not session.get('logged_in'):
+        return redirect(url_for('default'))
     run = True
 
     if inc is None:
@@ -125,13 +136,16 @@ def start():
         dec.start()
     else:
         logging.info("dec thread already running")
-    return redirect(url_for('value'))
+    return redirect(url_for('default'))
 
 @app.route('/stop')
 def stop():
     global run
     global dec
     global inc
+    logging.debug("running stop")
+    if not session.get('logged_in'):
+        return redirect(url_for('default'))
     run = False
     if inc is not None:
         inc.join()
@@ -139,7 +153,7 @@ def stop():
     if dec is not None:
         dec.join()
         dec = None
-    return redirect(url_for('value'))
+    return redirect(url_for('default'))
 
 def main():
     logging.basicConfig(filename='/var/log/statusservice.log',level=logging.DEBUG)
