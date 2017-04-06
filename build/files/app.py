@@ -1,8 +1,9 @@
 from flask import Flask
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, session, abort, flash
 import threading
 import logging
 import time
+import os
 app = Flask(__name__)
 
 data_store = {'a' : 1, 'b' : 88}
@@ -36,6 +37,7 @@ def decrementer():
 
 @app.route('/')
 def default():
+    logging.debug("rendering index")
     return render_template('index.html')
 
 @app.route('/index',methods = ['POST', 'GET'])
@@ -56,10 +58,12 @@ def index():
 	    logging.debug("nothing happened")
     elif request.method == 'GET':
 	logging.debug("returning the index page")
-    return redirect(url_for('value'))
+    # return redirect(url_for('value'))
+    return redirect(url_for('default'))
 
 @app.route('/home')
 def home():
+    logging.debug("running home")
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
@@ -67,14 +71,17 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def do_admin_login():
+    logging.debug("running login")
     if request.form['password'] == 'password' and request.form['username'] == 'admin':
         session['logged_in'] = True
     else:
         flash('wrong password!')
-    return home()
+    # return home()
+    return redirect(url_for('value'))
 
 @app.route('/jobrunner/v1/health')
 def health():
+    logging.debug("running health")
     return '{"status":"Ok"}'
 
 @app.route('/jobrunner/v1/version')
@@ -88,6 +95,7 @@ def value():
 
 @app.route('/hello')
 def hello_world():
+    logging.debug("running hello_world")
     return 'Hello, World!'
 
 @app.route('/hello/')
