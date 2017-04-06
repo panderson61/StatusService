@@ -37,9 +37,11 @@ def decrementer():
 
 @app.route('/')
 def default():
+    global run
+    global data_store
     logging.debug("running default")
     if session.get('logged_in'):
-        return render_template('index.html')
+        return render_template('index.html', run=run, incval=data_store['a'], decval=data_store['b'])
     return render_template('login.html')
 
 @app.route('/home')

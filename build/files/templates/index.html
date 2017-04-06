@@ -1,10 +1,17 @@
 <html>
+    <title>Status Service</title>
     <body>
-
+        <h1>Status Service</h1>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
         <form action = "http://localhost:5000/index" method = "post">
-        <p>Push a button!</p>
-        <p><input type = "submit" name = "StopButton" value = "Start" /></p>
-        <p><input type = "submit" name = "StopButton" value = "Stop" /></p>
+        <p>a = {{ incval }}, b = {{ decval }}</p>
+	{% if run %}
+            <p>Threads are <B><i>running</i></B></p>
+            <p><input type = "submit" name = "StopButton" value = "Stop" /></p>
+	{% else %}
+            <p>Threads are <B><i>stopped</i></B></p>
+            <p><input type = "submit" name = "StopButton" value = "Start" /></p>
+	{% endif %}
         <p><input type = "submit" name = "StopButton" value = "Logout" /></p>
         </form>
 

@@ -1,11 +1,14 @@
+<title>Status Service</title>
 {% block body %}
+<h1>Login to Status Service</h1>
 {% if session['logged_in'] %}
 <p>You're logged in already!</p>
 {% else %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
 <form action="/login" method="POST">
-  <input type="username" name="username" placeholder="Username">
-  <input type="password" name="password" placeholder="Password">
-  <input type="submit" value="Log in">
+  <p><input type="username" name="username" placeholder="Username"></p>
+  <p><input type="password" name="password" placeholder="Password"></p>
+  <p><input type="submit" value="Log in"></p>
 </form>
 {% endif %}
 {% endblock %}
