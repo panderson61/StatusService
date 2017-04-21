@@ -1,6 +1,7 @@
 <title>Status Service</title>
 {% block body %}
 <h1>Login to Status Service</h1>
+<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='favicon.ico') }}">
 {% if session['logged_in'] %}
 <p>You're logged in already!</p>
 {% else %}
